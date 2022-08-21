@@ -1,0 +1,91 @@
+---
+- name: Set default timezone
+  community.general.timezone:
+    name: "{{ preTimezone }}"
+
+- name: Install EPEL
+  ansible.builtin.package:
+    name: 'epel-release'
+    state: latest
+
+- name: Update all packages
+  ansible.builtin.package:
+    name: '*'
+    state: latest
+
+- name: Install mandatory packages
+  ansible.builtin.package:
+    name: "{{ item }}"
+    state: latest
+  loop: "{{ preMandatoryPkgs }}"
+
+- name: Install custom packages
+  ansible.builtin.package:
+    name: "{{ item }}"
+    state: latest
+  loop: "{{ preCustomPkgs }}"
+
+- name: Install docker module for python
+  ansible.builtin.pip:
+    name: "{{ item }}"
+    state: present
+  loop: "{{ prePythonPkgs }}"
+  ignore_errors: true
+
+- name: Remove old docker SDK module for python
+  ansible.builtin.pip:
+    name: docker-py
+    state: absent
+
+- name: Deploy default bashrc in skel
+  ansible.builtin.template:
+    src: bashrc.yaml.j2
+    dest: /etc/skel/.bashrc
+    owner: root
+    group: root
+    mode: '0644'
+    backup: yes
+
+- name: Remplace root bashrc
+  ansible.builtin.template:
+    src: bashrc.yaml.j2
+    dest: /root/.bashrc
+    owner: root
+    group: root
+    mode: '0644'
+    backup: yes
+
+- name: Start at daemon
+  ansible.builtin.service:
+    name: atd
+    state: started
+    enabled: no
+
+- name: Download Docker repo
+  get_url:
+    url: https://download.docker.com/linux/centos/docker-ce.repo
+    dest: /etc/yum.repos.d/docer-ce.repo
+
+- name: Install docker
+  ansible.builtin.dnf:
+    name: "{{ item }}"
+    state: latest
+  loop: "{{ preDockerPackages }}"
+
+- name: Start docker service
+  ansible.builtin.service:
+    name: docker
+    state: started
+    enabled: yes
+
+- name: Download docker-compose
+  get_url:
+    url: https://github.com/docker/compose/releases/download/1.29.2/docker-compose-Linux-x86_64
+    dest: /usr/local/bin/docker-compose
+    mode: '0755'
+
+- name: Create symbolic link for docker-compose
+  ansible.builtin.file:
+    src: /usr/local/bin/docker-compose
+    dest: /usr/bin/docker-compose
+    state: link

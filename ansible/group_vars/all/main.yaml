@@ -1,0 +1,52 @@
+---
+## * Variable can be changed * ##
+# Variables for 01_prerequisites
+preTimezone: Europe/Paris
+preCustomPkgs:
+  - gcc
+  - bash-completion
+  - net-tools
+  - vim
+  - curl
+  - wget
+  - zip
+  - unzip
+  - htop
+  - git
+  - mlocate
+  - ccze
+  - jq
+  - zsh
+  - pwgen
+# Variables for 02_user_creation
+userName: coreadm
+groupName: coreadm
+# Variables for 03_docker_proxy
+dockerRootDir: /data
+dockerDefaultNet: core_gateway
+# Variables for 04_after_run
+adminDir: /admin
+
+## ! DO NOT CHANGE ANYTHING IN THAT PART ! ##
+## * Variable can not be changed * ##
+# Variables for 01_prerequisites
+preMandatoryPkgs:
+  - at
+  - make
+  - python36
+  - python3-passlib
+  - libtool
+preDockerPackages:
+  - docker-ce
+  - docker-ce-cli
+  - containerd.io
+prePythonPkgs:
+  - docker
+  - docker-compose
+# Variables for 02_user_creation
+userPassword: "{{ readUserpassword }}"
+userPassphrase: "{{ readUserpassphrase }}"
+# Variables for 03_docker_proxy
+# Variables for 04_after_run
+adminDirBin: "{{ adminDir }}/bin"
+userDisable: "{{ readUserDisable }}"

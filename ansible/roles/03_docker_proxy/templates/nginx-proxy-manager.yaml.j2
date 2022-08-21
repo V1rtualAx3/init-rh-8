@@ -1,0 +1,54 @@
+version: "3"
+
+services:
+  app:
+    container_name: nginx_proxy
+    image: 'jc21/nginx-proxy-manager:latest'
+    restart: unless-stopped
+    ports:
+      - '80:80'
+      - '443:443'
+      - '81:81'
+    networks:
+      - {{ dockerDefaultNet }}
+      - internal
+    environment:
+      DB_MYSQL_HOST: "nginx_database"
+      DB_MYSQL_PORT: 3306
+      DB_MYSQL_USER: "svc_npm"
+      DB_MYSQL_PASSWORD: "MYSQL_USER_PASS"
+      DB_MYSQL_NAME: "db_npm"
+      DISABLE_IPV6: 'true'
+    volumes:
+      - vol_data:/data
+      - vol_certificates:/etc/letsencrypt
+    depends_on:
+      - db
+    healthcheck:
+      test: ["CMD", "/bin/check-health"]
+      interval: 10s
+      timeout: 3s
+
+  db:
+    container_name: nginx_database
+    image: 'jc21/mariadb-aria:latest'
+    restart: unless-stopped
+    networks:
+      - internal
+    environment:
+      MYSQL_ROOT_PASSWORD: 'EnmEbVthkvzENKzrE2gQ'
+      MYSQL_DATABASE: 'db_npm'
+      MYSQL_USER: 'svc_npm'
+      MYSQL_PASSWORD: 'MYSQL_USER_PASS'
+    volumes:
+      - vol_database:/var/lib/mysql
+
+networks:
+  {{ dockerDefaultNet }}:
+    external: true
+  internal:
+
+volumes:
+  vol_data:
+  vol_certificates:
+  vol_database:

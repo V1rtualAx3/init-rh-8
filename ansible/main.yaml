@@ -1,0 +1,22 @@
+---
+- hosts: all
+  become: true
+
+  roles:
+    - role: 01_prerequisites
+      when:
+      - ansible_facts['os_family'] == "RedHat"
+      - ansible_facts['distribution_major_version'] == "8"
+    - role: 02_user_creation
+      when:
+      - ansible_facts['os_family'] == "RedHat"
+      - ansible_facts['distribution_major_version'] == "8"
+    - role: 03_docker_proxy
+      when:
+      - ansible_facts['os_family'] == "RedHat"
+      - ansible_facts['distribution_major_version'] == "8"
+    - role: 04_after_run
+      when:
+      - ansible_facts['os_family'] == "RedHat"
+      - ansible_facts['distribution_major_version'] == "8"
+      - readUserDisable != "no"

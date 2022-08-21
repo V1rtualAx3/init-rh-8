@@ -1,0 +1,22 @@
+---
+- hosts: localhost
+  become: true
+  no_log: true
+
+  tasks:
+    - name: Remove centos user
+      ansible.builtin.user:
+        name: "{{ userDisable }}"
+        state: absent
+    
+    - name: Remove centos home directory
+      ansible.builtin.file:
+        path: "/home/{{ userDisable }}"
+        state: absent
+        recurse: yes
+
+    - name: Create cron job
+      ansible.builtin.cron:
+        name: after-reboot
+        user: root
+        state: absent

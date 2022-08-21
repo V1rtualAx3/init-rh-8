@@ -1,0 +1,26 @@
+---
+- name: Create manifest and nginx_proxy_manager directories
+  ansible.builtin.file:
+    path: "{{ dockerRootDir }}/manifest/nginx_proxy_manager"
+    state: directory
+    mode: '0755'
+
+- name: Deploy nginx-proxy-manager template
+  ansible.builtin.template:
+    src: nginx-proxy-manager.yaml.j2
+    dest: "{{ dockerRootDir }}/manifest/nginx_proxy_manager/docker-compose.yaml"
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: Create default docker network
+  community.docker.docker_network:
+    name: "{{ dockerDefaultNet }}"  
+
+- name: Deploy nginx-proxy-manager container
+  community.docker.docker_compose:
+    project_src: "{{ dockerRootDir }}/manifest/nginx_proxy_manager"
+    files:
+      - docker-compose.yaml
+    state: present  
+  

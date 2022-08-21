@@ -1,0 +1,41 @@
+---
+- name: Create admin directory
+  ansible.builtin.file:
+    path: "{{ adminDir }}"
+    state: directory
+    mode: '0700'
+
+- name: Create admin binary directory
+  ansible.builtin.file:
+    path: "{{ adminDirBin }}"
+    state: directory
+    mode: '0700'
+
+- name: Deploy after-reboot script
+  ansible.builtin.template:
+    src: script.yaml.j2
+    dest: "{{ adminDirBin }}/after-reboot.sh"
+    owner: root
+    group: root
+    mode: '0750'
+
+- name: Deploy after-reboot playbook
+  ansible.builtin.template:
+    src: after-reboot.yaml.j2
+    dest: "{{ adminDirBin }}/after-reboot.yml"
+    owner: root
+    group: root
+    mode: '0750'
+
+- name: Create cron job
+  ansible.builtin.cron:
+    name: "after-reboot"
+    special_time: reboot
+    job: "{{ adminDirBin }}/after-reboot.sh"
+    state: present
+
+- name: Prepare auto reboot
+  ansible.posix.at:
+    command: reboot
+    count: 1
+    units: minutes

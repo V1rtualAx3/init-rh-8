@@ -19,11 +19,11 @@ preCustomPkgs:
   - zsh
   - pwgen
 # Variables for 02_user_creation
-userName: coreadm
-groupName: coreadm
+userName: adm
+groupName: adm
 # Variables for 03_docker_proxy
 dockerRootDir: /data
-dockerDefaultNet: core_gateway
+dockerDefaultNet: gateway_external
 # Variables for 04_after_run
 adminDir: /admin
 

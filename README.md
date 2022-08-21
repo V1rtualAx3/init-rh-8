@@ -1,25 +1,33 @@
 # Init - RedHat family verison 8
 
-Initialization of a Docker server with Ngnix Proxy Manager as a Reverse proxy system.
+Initialization of a Docker server with Ngnix Proxy Manager as a Reverse proxy system. This project will execute an Ansible CLI installation and 4 Ansible roles located in [ansible directory](ansible/roles).
 
-## Operating system compatible
+> Defaults values can be customized in [vars file](ansible/group_vars/all/main.yaml)
+
+## 🖥️ Operating system compatible
 
 - RedHat Enterprise 8
 - CentOS 8
 - RockyLinux 8
 - AlmaLinux 8
 
-## Description
+## 🚀 Get Started
 
-This project will execute an Ansible CLI installation and 4 Ansible playbooks.
+```bash
+git clone https://github.com/V1rtualAx3/init-rh-8.git
+cd init-rh-8/
 
-Defaults values can be customized in [vars file](ansible/group_vars/all/main.yaml)
+## for remote install
+./init.sh -r
 
-## Ansible installation
+## for local install
+./init.sh -l
 
-Installation of EPEL repository, Python 3.8 and Ansible.
+## print help message
+./init.sh -h
+```
 
-## 01 - Prerequisites
+## :one: Prerequisites
 
 Prerequisites role contains these features :
 - Configuration of the default Timezone [ default: Europe/Paris ]
@@ -28,7 +36,7 @@ Prerequisites role contains these features :
 - Installation of docker (container system) with containerd (container runtime) and docker-compose (container deployer)
 - Activation of docker service
 
-## 02 - User creation
+## :two: User creation
 
 Creation of a default adminitrator user:
 - Creation of a new adminitrator group [ default: adm ]
@@ -37,16 +45,16 @@ Creation of a default adminitrator user:
 - Add user key pair to authorized_keys file
 - Deployment of a new SSHD configuration to denied password and force key pair authentification
 
-## 03 - Docker proxy
+## :three: Docker proxy
 
 Deployment of a docker reverse proxy:
 - Create of default docker data and manifest directory [ default: /data ]
 - Deploy Nginx Proxy Manager template [ template in: 03_docker_proxy/templates ]
 - Deploy Nginx Proxy Manager container
 
-## 04 - After run
+## :four: After run
 
-Delete orginal account like ec2-user, almalinux, centos, etc. This step can be skipped with `--no-disable-user`:
+Delete orginal account like ec2-user, almalinux, centos, etc:
 - Creation of an admin directory [ default: /admin ]
 - Creation of binary subdirectory in admin
 - Deployment of after-run script template [ template in: 04_after_run/templates ]
